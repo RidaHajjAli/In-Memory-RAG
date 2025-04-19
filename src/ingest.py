@@ -39,7 +39,7 @@ def load_and_index_csv() -> None:
 
             text_chunk = ", ".join(chunk_parts)
 
-            if not text_chunk: # Skip if row had no usable data in relevant columns
+            if not text_chunk:
                 # print(f"Skipping empty row {index+1} in CSV (no data in relevant columns).")
                 skipped_count += 1
                 continue
