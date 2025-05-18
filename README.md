@@ -1,6 +1,6 @@
 # In-Memory RAG Application
 
-A Python-based **Retrieval-Augmented Generation (RAG)** application that combines document retrieval and generative AI to answer queries about Lebanese hospitals and the medical situation. The application processes CSV, PDF, Word, and Excel files, indexes their content, and uses a generative AI model to provide context-aware answers.
+A Python-based **Retrieval-Augmented Generation (RAG)** application that combines document retrieval and generative AI to answer queries about any specific data. The application processes CSV, PDF, Word, and Excel files, indexes their content, and uses a generative AI model to provide context-aware answers.
 
 ---
 
@@ -61,9 +61,8 @@ A Python-based **Retrieval-Augmented Generation (RAG)** application that combine
    ```
 
 2. **Query Interface**:
-   - Enter your query about Lebanese hospitals or the medical situation.
+   - Enter your query about the documents given or uploaded in the UI.
    - Upload files dynamically to include their content in the search results.
-   - Type `quit` to exit the application.
 
 ---
 
@@ -76,7 +75,7 @@ The `config.py` file contains the following settings:
   - `PDF_FILEPATH`: Path to the PDF file.
 
 - **Model Names**:
-  - `EMBEDDING_MODEL_NAME`: Name of the embedding model.
+  - `EMBEDDING_MODEL_NAME`: Name of the embedding mode.
   - `GENERATIVE_MODEL_NAME`: Name of the generative model.
 
 - **Indexing Settings**:
@@ -95,7 +94,7 @@ RAG Project/
 ├── assets/                   # Directory for images and demo GIFs
 │   ├── process_flow.png      # Image for the "How It Works" section
 │   ├── demo.gif              # Demo GIF for the application
-├── data/                     # Directory for input data files (CSV, PDF, Word, Excel)
+├── data/                     # Directory for example input data files (CSV, PDF, Word, Excel)
 │   ├── hospitals_leb.csv     # Example CSV file
 │   ├── WHO_Article.pdf       # Example PDF file
 ├── src/                      # Source code directory
@@ -130,8 +129,7 @@ RAG Project/
 4. **Output**:
    - The application displays answers with and without RAG context for comparison.
 
-![Process Flow](assets/process_flow.png)
-
+![Process Flow](assets/RAG_Process.png)
 ---
 
 ## Demo
@@ -139,6 +137,16 @@ RAG Project/
 Below is a demo of the application in action:
 
 ![Demo](assets/demo.gif)
+
+---
+
+## Feature Work:
+
+1. Improve the processing specially for Arabic
+2. Supporting more files formats like images
+3. Adding OCR for the documents
+4. Enabling voice messages
+5. Using Vector database instead of memory
 
 ---
 
