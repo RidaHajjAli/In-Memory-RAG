@@ -11,8 +11,7 @@ PDF_FILEPATH = os.path.join(DATA_DIR, PDF_FILENAME)
 EMBEDDING_MODEL_NAME = 'models/embedding-001' 
 GENERATIVE_MODEL_NAME = 'gemini-2.0-flash'   
 
-CSV_RELEVANT_COLUMNS = ['Hospital', 'Est_Date', 'Location', 'Address', 'NumBeds']
-CSV_ID_COLUMN = 'Id'
+CSV_ID_COLUMN = None 
 
 TOP_K = 3
 

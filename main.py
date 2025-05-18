@@ -1,95 +1,53 @@
 import os
-import sys
-project_root = os.path.dirname(os.path.abspath(__file__))
-src_path = os.path.join(project_root, 'src')
-if src_path not in sys.path:
-    sys.path.insert(0, src_path)
+from src.ingest import load_and_index_csv, load_and_index_pdf, in_memory_index  # Import in_memory_index here
+from src.utils import save_index_to_file, load_index_from_file, INDEX_FILE
+from ui.app import create_ui
 
-import config
-from config import configure_api
-from src.utils import get_generative_model, save_index_to_file, load_index_from_file
-from src.ingest import load_and_index_csv, load_and_index_pdf, get_indexed_data
-from src.rag import generate_answer, query_rag_pipeline
+def regenerate_index():
+    global in_memory_index
+    in_memory_index.clear()  # Clear the existing index in-place
+    print("Cleared the in-memory index.")
 
-def main():
-    """Main function to set up, index data, and run the comparison query loop."""
-    print("Starting RAG Comparison Application...")
-    print("-" * 60)
+    # Regenerate embeddings
+    print("\n=== Processing CSV Data ===")
+    load_and_index_csv()
+    csv_count = len(in_memory_index)
+    print(f"CSV processing complete. Added {csv_count} items to index.")
 
-    # 1. Configure API (Must be done first)
-    try:
-        configure_api()
-        get_generative_model()
-    except ValueError as e:
-        print(f"Configuration Error: {e}")
-        return
-    except Exception as e:
-        print(f"Error initializing API or models: {e}")
-        return
+    print("\n=== Processing PDF Data ===")
+    load_and_index_pdf()
+    total_count = len(in_memory_index)
+    pdf_count = total_count - csv_count
+    print(f"PDF processing complete. Added {pdf_count} items to index.")
 
-    print("\n--- Data Indexing ---")
-    # Load the index from file if it exists
-    in_memory_index = load_index_from_file()
-
-    if not in_memory_index:  # If no saved index, perform indexing
-        indexing_done = False
-        if os.path.exists(config.CSV_FILEPATH):
-            load_and_index_csv()
-            indexing_done = True
-        else:
-            print(f"Warning: CSV file not found at {config.CSV_FILEPATH}. Skipping CSV indexing.")
-
-        if os.path.exists(config.PDF_FILEPATH):
-            load_and_index_pdf()
-            indexing_done = True
-        else:
-            print(f"Warning: PDF file not found at {config.PDF_FILEPATH}. Skipping PDF indexing.")
-
-        in_memory_index = get_indexed_data()
-
-        if not indexing_done:
-            print("\nError: Neither CSV nor PDF found in the data directory. Cannot proceed.")
-            return
-        elif not in_memory_index:
-            print("\nWarning: No data was successfully indexed, possibly due to file errors or empty files.")
-
-        # Save the index to a file for future use
+    # Save the updated index
+    if in_memory_index:  # Ensure index is not empty before saving
         save_index_to_file(in_memory_index)
-
-    print(f"\nTotal items indexed: {len(in_memory_index)}")
-    print("--- Indexing Complete ---")
-    print("-" * 60)
-
-    # 3. Start Comparison Query Loop
-    print("\n--- Query Interface ---")
-    print("Enter your query about Lebanese hospitals or the medical situation.")
-    print("Type 'quit' to exit.")
-
-    while True:
-        user_query = input("\nQuery: ")
-        if user_query.lower() == 'quit':
-            break
-        if not user_query.strip():
-            print("Please enter a valid query.")
-            continue
-
-        print("\n" + "=" * 30)
-        print("      BEFORE RAG")
-        print("=" * 30)
-        direct_answer = generate_answer(query=user_query, context_items=None)
-        print("\nAnswer (Directly from LLM):")
-        print(direct_answer)
-        print("=" * 30)
-
-        print("\n" + "#" * 30)
-        print("       AFTER RAG")
-        print("#" * 30)
-        rag_answer = query_rag_pipeline(user_query, in_memory_index, top_k=config.TOP_K)
-        print("\nAnswer (Using RAG):")
-        print(rag_answer)
-        print("#" * 30)
-
-    print("\nExiting RAG application.")
+        print(f"\nIndex regenerated and saved. Total items: {total_count}")
+        print(f"Breakdown: {csv_count} CSV items, {pdf_count} PDF items")
+        # Reload from file to ensure consistency
+        in_memory_index[:] = load_index_from_file()
+    else:
+        print("Error: Index is empty after regeneration. Check data sources and processing logic.")
 
 if __name__ == "__main__":
-    main()
+    # Check if the index file exists and is not empty
+    if not os.path.exists(INDEX_FILE) or not load_index_from_file():
+        print("Index file is missing or empty. Regenerating embeddings...")
+        regenerate_index()
+    else:
+        # Always reload the index from file to ensure in-memory is up-to-date
+        in_memory_index[:] = load_index_from_file()
+        print("Index file found and loaded.")
+        # Verify the loaded index contains both CSV and PDF data
+        csv_items = sum(1 for item in in_memory_index if 'CSV' in item.get('source', ''))
+        pdf_items = sum(1 for item in in_memory_index if 'PDF' in item.get('source', ''))
+        print(f"Loaded index contains: {csv_items} CSV items, {pdf_items} PDF items")
+        if pdf_items == 0:
+            print("Warning: No PDF items found in index. Regenerating index...")
+            regenerate_index()
+
+    # Launch the UI
+    print("Launching Gradio UI...")
+    demo = create_ui()
+    demo.launch()

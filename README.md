@@ -1,15 +1,16 @@
 # In-Memory RAG Application
 
-A Python-based **Retrieval-Augmented Generation (RAG)** application that combines document retrieval and generative AI to answer queries about Lebanese hospitals and the medical situation. The application processes CSV and PDF files, indexes their content, and uses a generative AI model to provide context-aware answers.
+A Python-based **Retrieval-Augmented Generation (RAG)** application that combines document retrieval and generative AI to answer queries about Lebanese hospitals and the medical situation. The application processes CSV, PDF, Word, and Excel files, indexes their content, and uses a generative AI model to provide context-aware answers.
 
 ---
 
 ## Features
 
-- **Data Ingestion**: Supports CSV and PDF files for data extraction and indexing.
+- **Data Ingestion**: Supports CSV, PDF, Word, and Excel files for data extraction and indexing.
 - **Indexing**: Generates embeddings for text chunks and saves them for future use.
 - **Retrieval-Augmented Generation (RAG)**: Combines document retrieval with generative AI to answer user queries.
 - **Interactive Query Interface**: Allows users to input queries and receive answers with and without RAG context.
+- **File Upload Support**: Users can upload files dynamically, and the application will include their content in the search results.
 - **Persistence**: Saves the indexed data to avoid re-indexing on subsequent runs.
 
 ---
@@ -22,6 +23,7 @@ A Python-based **Retrieval-Augmented Generation (RAG)** application that combine
 - [Configuration](#configuration)
 - [Project Structure](#project-structure)
 - [How It Works](#how-it-works)
+- [Demo](#demo)
 - [License](#license)
 
 ---
@@ -46,7 +48,7 @@ A Python-based **Retrieval-Augmented Generation (RAG)** application that combine
 
 ### Data Preparation
 
-- Place your CSV and PDF files in the `data/` directory.
+- Place your CSV, PDF, Word, and Excel files in the `data/` directory.
 - Update file paths and relevant columns in `config.py` if needed.
 
 ---
@@ -60,6 +62,7 @@ A Python-based **Retrieval-Augmented Generation (RAG)** application that combine
 
 2. **Query Interface**:
    - Enter your query about Lebanese hospitals or the medical situation.
+   - Upload files dynamically to include their content in the search results.
    - Type `quit` to exit the application.
 
 ---
@@ -89,13 +92,18 @@ The `config.py` file contains the following settings:
 
 ```
 RAG Project/
-├── data/                     # Directory for input data files (CSV, PDF)
+├── assets/                   # Directory for images and demo GIFs
+│   ├── process_flow.png      # Image for the "How It Works" section
+│   ├── demo.gif              # Demo GIF for the application
+├── data/                     # Directory for input data files (CSV, PDF, Word, Excel)
 │   ├── hospitals_leb.csv     # Example CSV file
 │   ├── WHO_Article.pdf       # Example PDF file
 ├── src/                      # Source code directory
 │   ├── ingest.py             # Handles data ingestion and indexing
 │   ├── utils.py              # Utility functions for embeddings, similarity, and file operations
 │   ├── rag.py                # Implements the RAG pipeline
+├── ui/       
+│   ├── app.py                # Gradio Interface 
 ├── config.py                 # Configuration file for paths, models, and settings
 ├── main.py                   # Entry point for the application
 ├── index.json                # Saved index file (generated after indexing)
@@ -108,7 +116,7 @@ RAG Project/
 ## How It Works
 
 1. **Data Ingestion**:
-   - The application reads data from CSV and PDF files.
+   - The application reads data from CSV, PDF, Word, and Excel files.
    - Text is split into chunks, and embeddings are generated for each chunk.
 
 2. **Indexing**:
@@ -121,6 +129,16 @@ RAG Project/
 
 4. **Output**:
    - The application displays answers with and without RAG context for comparison.
+
+![Process Flow](assets/process_flow.png)
+
+---
+
+## Demo
+
+Below is a demo of the application in action:
+
+![Demo](assets/demo.gif)
 
 ---
 

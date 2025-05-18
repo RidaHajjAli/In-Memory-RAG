@@ -18,6 +18,8 @@ def save_index_to_file(index, filepath=INDEX_FILE):
     """Saves the in-memory index to a JSON file."""
     with open(filepath, 'w', encoding='utf-8') as f:
         json.dump(index, f, ensure_ascii=False, indent=4)
+        f.flush()
+        os.fsync(f.fileno())
     print(f"Index saved to {filepath}.")
 
 def load_index_from_file(filepath=INDEX_FILE):
@@ -25,6 +27,9 @@ def load_index_from_file(filepath=INDEX_FILE):
     try:
         with open(filepath, 'r', encoding='utf-8') as f:
             index = json.load(f)
+        if not isinstance(index, list):
+            print(f"Warning: Index file {filepath} does not contain a list. Returning empty list.")
+            return []
         print(f"Index loaded from {filepath}.")
         return index
     except FileNotFoundError:
@@ -53,11 +58,17 @@ def get_generative_model():
 def get_embedding(text: str) -> List[float]:
     """Generates embeddings for the given text."""
     model = get_embedding_model()
-    zero_vector = [0.0] * config.EMBEDDING_DIMENSION # Use dimension from config
+    zero_vector = [0.0] * config.EMBEDDING_DIMENSION  # Use dimension from config
     try:
         if not text or text.isspace():
             print(f"Warning: Attempted to embed empty text. Returning zero vector.")
             return zero_vector
+
+        # Truncate text if it exceeds the model's input limit
+        max_input_length = 2048  # Example limit, adjust based on model specs
+        if len(text) > max_input_length:
+            print(f"Warning: Text exceeds max input length ({max_input_length} chars). Truncating.")
+            text = text[:max_input_length]
 
         result = genai.embed_content(
             model=model.model_name,
