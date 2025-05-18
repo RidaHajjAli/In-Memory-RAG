@@ -24,6 +24,7 @@ A Python-based **Retrieval-Augmented Generation (RAG)** application that combine
 - [Project Structure](#project-structure)
 - [How It Works](#how-it-works)
 - [Demo](#demo)
+- [Future Work](#future-work)
 - [License](#license)
 
 ---
@@ -140,7 +141,7 @@ Below is a demo of the application in action:
 
 ---
 
-## Feature Work:
+## Future Work:
 
 1. Improve the processing specially for Arabic
 2. Supporting more files formats like images
