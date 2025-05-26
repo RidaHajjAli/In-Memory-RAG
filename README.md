@@ -130,15 +130,14 @@ RAG Project/
 4. **Output**:
    - The application displays answers with and without RAG context for comparison.
 
-![Process Flow](assets/process_flow.png)
-
+![Process Flow](assets\RAG_Process.png)
 ---
 
 ## Demo
 
 Below is a demo of the application in action:
 
-![Demo](assets/demo.gif)
+![Demo](assets\demo.gif)
 
 ---
 
