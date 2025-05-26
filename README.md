@@ -24,7 +24,6 @@ A Python-based **Retrieval-Augmented Generation (RAG)** application that combine
 - [Project Structure](#project-structure)
 - [How It Works](#how-it-works)
 - [Demo](#demo)
-- [Future Work](#future-work)
 - [License](#license)
 
 ---
@@ -130,14 +129,24 @@ RAG Project/
 4. **Output**:
    - The application displays answers with and without RAG context for comparison.
 
-![Process Flow](assets\RAG_Process.png)
+![Process Flow](assets/RAG_Process.png)
 ---
 
 ## Demo
 
 Below is a demo of the application in action:
 
-![Demo](assets\demo.gif)
+![Demo](assets/demo.gif)
+
+---
+
+## Feature Work:
+
+1. Improve the processing specially for Arabic
+2. Supporting more files formats like images
+3. Adding OCR for the documents
+4. Enabling voice messages
+5. Using Vector database instead of memory
 
 ---
 
